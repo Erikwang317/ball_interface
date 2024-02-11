@@ -1,4 +1,3 @@
-readme_content = """
 # Ball Interface Application
 
 ## Overview
