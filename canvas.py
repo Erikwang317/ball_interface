@@ -1,5 +1,7 @@
 import pygame
 import random
+import threading 
+import time
 from ball import Ball 
 
 class Canvas(): 
@@ -12,16 +14,22 @@ class Canvas():
         
     def draw_balls(self):
         for ball in self.balls:
-            pygame.draw.circle(screen, ball.color, ball.pos, ball.radius)#self.ball_num)     
+            pygame.draw.circle(screen, ball.color, ball.pos, ball.radius)#self.ball_num)          
 
 
 if __name__ == "__main__":
     pygame.init()
     canvas = Canvas()
+    running_event = threading.Event()
+    running_event.set()
     screen = pygame.display.set_mode((canvas.window_width, canvas.window_height))
     running = True
     showing_help = False
     clock = pygame.time.Clock()
+    
+    for ball in canvas.balls:
+        thread = threading.Thread(target=ball.manage, args=(canvas.window_width, canvas.window_height, running_event))
+        thread.start()
     
     while running:
         for event in pygame.event.get():
@@ -48,5 +56,7 @@ if __name__ == "__main__":
         canvas.draw_balls()
         pygame.display.flip()
         clock.tick(100)
+        
+    running_event.clear()
     pygame.quit()
 
